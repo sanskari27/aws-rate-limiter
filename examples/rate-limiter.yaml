@@ -1,0 +1,145 @@
+redis:
+  url: ${REDIS_URL}
+  connectTimeout: 500
+  commandTimeout: 200
+  maxRetriesPerRequest: 2
+
+# Rules are evaluated top-to-bottom — FIRST MATCH wins.
+# Each rule can target specific routes via glob patterns on "METHOD /path".
+# Unmatched requests fall through to the last rule (catch-all).
+rules:
+
+  # ── Auth: very strict (brute-force protection) ────────────────────────
+  - name: auth-endpoints
+    match:
+      routes:
+        - "POST /auth/*"
+        - "POST /login"
+        - "POST /register"
+        - "POST /forgot-password"
+    limits:
+      ip:
+        limit: 10        # 10 attempts per IP per minute
+        window: 60
+      route:
+        limit: 100       # 100 total requests across all IPs per minute
+        window: 60
+    failure: closed       # deny all if Redis is down (safety first for auth)
+
+  # ── File uploads: low limit, larger window ────────────────────────────
+  - name: uploads
+    match:
+      routes:
+        - "POST /api/uploads"
+        - "POST /api/files"
+        - "PUT /api/files/*"
+    limits:
+      ip:
+        limit: 20        # 20 uploads per IP per 5 minutes
+        window: 300
+      user:
+        limit: 50        # 50 uploads per user per 5 minutes
+        window: 300
+
+  # ── Search: moderate limits (expensive backend queries) ───────────────
+  - name: search
+    match:
+      routes:
+        - "GET /api/search"
+        - "GET /api/search/*"
+    limits:
+      ip:
+        limit: 30        # 30 searches per IP per minute
+        window: 60
+      user:
+        limit: 60        # 60 searches per user per minute
+        window: 60
+
+  # ── Read-heavy endpoints: generous limits ─────────────────────────────
+  - name: read-apis
+    match:
+      routes:
+        - "GET /api/**"    # all GET requests under /api/
+    limits:
+      ip:
+        limit: 200       # 200 reads per IP per minute
+        window: 60
+      route:
+        limit: 5000      # 5000 total requests per route per minute
+        window: 60
+      user:
+        limit: 300       # 300 reads per user per minute
+        window: 60
+
+  # ── Write endpoints: tighter limits ───────────────────────────────────
+  - name: write-apis
+    match:
+      routes:
+        - "POST /api/**"
+        - "PUT /api/**"
+        - "PATCH /api/**"
+        - "DELETE /api/**"
+    limits:
+      ip:
+        limit: 50        # 50 writes per IP per minute
+        window: 60
+      user:
+        limit: 100       # 100 writes per user per minute
+        window: 60
+      userRoute:
+        limit: 20        # 20 writes per user per specific route per minute
+        window: 60
+
+  # ── Premium users: higher limits (requires getUserTier) ───────────────
+  # IMPORTANT: This rule only matches when your adapter provides `getUserTier`
+  # (Express/Fastify) or sets `userTier` on the RateLimitContext (core API).
+  # If userTier is undefined, this rule is skipped.
+  - name: premium-tier
+    match:
+      userTiers:
+        - premium
+        - enterprise
+    limits:
+      ip:
+        limit: 1000
+        window: 60
+      user:
+        limit: 500
+        window: 60
+      userRoute:
+        limit: 100
+        window: 60
+    failure: open
+
+  # ── Default catch-all (must be LAST — no match criteria) ──────────────
+  - name: default
+    limits:
+      ip:
+        limit: 100
+        window: 60
+      route:
+        limit: 1000
+        window: 60
+      user:
+        limit: 200
+        window: 60
+      userRoute:
+        limit: 50
+        window: 60
+
+reservoir:
+  enabled: true
+  batchSize: 10
+  syncInterval: 1000
+
+failure:
+  default: open
+  circuitBreaker:
+    enabled: true
+    threshold: 5
+    recoveryTimeout: 30000
+
+observability:
+  logLevel: info
+  logSampleRate: 0.1
+  metrics: none

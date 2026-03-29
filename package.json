@@ -13,7 +13,8 @@
 		"test:coverage": "jest --coverage",
 		"test:mutation": "stryker run",
 		"lint": "eslint src --ext .ts",
-		"clean": "rm -rf dist"
+		"clean": "rm -rf dist",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@aws-sdk/client-cloudwatch": "^3.0.0",
@@ -30,10 +31,21 @@
 		"@types/js-yaml": "^4.0.9",
 		"@types/minimatch": "^5.1.2",
 		"@types/node": "^20.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.57.2",
+		"@typescript-eslint/parser": "^8.57.2",
+		"eslint": "^10.1.0",
+		"husky": "^9.1.7",
 		"jest": "^29.5.0",
+		"lint-staged": "^16.4.0",
 		"ts-jest": "^29.1.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.0.0"
+	},
+	"lint-staged": {
+		"src/**/*.ts": [
+			"eslint --fix",
+			"jest --coverage --findRelatedTests --passWithNoTests"
+		]
 	},
 	"engines": {
 		"node": ">=18.x"
