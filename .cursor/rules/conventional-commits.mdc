@@ -1,0 +1,102 @@
+---
+description: Enforce Conventional Commits format for all git commit messages in this project
+alwaysApply: true
+---
+
+# Conventional Commits
+
+All commit messages MUST follow this format:
+
+```
+<type>(<optional scope>): <short description>
+
+[optional body]
+
+[optional footer — BREAKING CHANGE: <description>]
+```
+
+## Allowed Types
+
+| Type       | When to use                                      |
+| ---------- | ------------------------------------------------ |
+| `feat`     | A new feature                                    |
+| `fix`      | A bug fix                                        |
+| `chore`    | Maintenance, dependency updates, config changes  |
+| `docs`     | Documentation changes only                      |
+| `test`     | Adding or fixing tests                           |
+| `refactor` | Code change that is neither a fix nor a feature  |
+| `perf`     | Performance improvement                          |
+| `ci`       | CI/CD pipeline changes                           |
+| `build`    | Build system or tooling changes                  |
+| `revert`   | Reverts a previous commit                        |
+
+## Breaking Changes
+
+Append `!` after the type, or add `BREAKING CHANGE:` in the footer:
+
+```
+feat!: rename RateLimiter constructor options
+```
+
+```
+feat: add new auth flow
+
+BREAKING CHANGE: `userId` field is now required in RateLimitContext
+```
+
+## Examples
+
+```
+# Good
+feat(adapters): add Koa middleware
+fix: handle null IP address in IPv6 normalization
+chore: upgrade ioredis to v5.4
+docs: update README with cluster config example
+test: add unit tests for circuit breaker recovery
+refactor(redis): extract script loader into separate class
+perf: reduce Redis round-trips using local reservoir
+ci: add semantic-release to release workflow
+build: add exports field to package.json
+revert: revert "feat: experimental SSM hot-reload"
+
+# Bad — will be blocked by commitlint
+added koa adapter
+Fixed null IP bug
+WIP
+update stuff
+```
+
+## Line Length Rules
+
+commitlint enforces these hard limits — violating them blocks the commit:
+
+| Part              | Max length | Rule                    |
+| ----------------- | ---------- | ----------------------- |
+| Subject (1st line) | 100 chars  | `header-max-length`     |
+| Body lines        | 100 chars  | `body-max-line-length`  |
+| Footer lines      | 100 chars  | `footer-max-line-length`|
+
+When writing a multi-line body, wrap at ~80 characters to stay safe:
+
+```
+# Good — each body line is under 100 chars
+chore: initialize project with essential configurations
+
+Added commitlint for standardized commit messages and a LICENSE file.
+Updated package.json with new package name and devDependencies for
+semantic-release. Introduced GitHub Actions workflow for releases.
+
+# Bad — single body line exceeds 100 chars
+chore: initialize project with essential configurations
+
+Added commitlint configuration for standardized commit messages and a LICENSE file with MIT licensing. Updated package.json to reflect the new package name.
+```
+
+## Version Bump Rules (semantic-release)
+
+| Commit type              | Version bump          |
+| ------------------------ | --------------------- |
+| `fix:`                   | patch (1.0.0 → 1.0.1) |
+| `feat:`                  | minor (1.0.0 → 1.1.0) |
+| `feat!:` / `BREAKING CHANGE:` | major (1.0.0 → 2.0.0) |
+| `chore:`, `docs:`, etc.  | no release            |
