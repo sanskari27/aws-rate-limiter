@@ -1,0 +1,121 @@
+# ─── Dependencies ────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ─── Build Output ─────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+*.js.map
+*.d.ts.map
+
+# ─── TypeScript ───────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Test & Coverage ──────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+reports/
+*.lcov
+
+# ─── Stryker (Mutation Testing) ───────────────────────────────────────────────
+.stryker-tmp/
+reports/mutation/
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─── Environment & Secrets ────────────────────────────────────────────────────
+.env
+.env.*
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# ─── AWS ──────────────────────────────────────────────────────────────────────
+.aws/
+aws-exports.js
+amplify/
+.amplify/
+cdk.out/
+cdk.context.json
+samconfig.toml
+
+# ─── Infrastructure ───────────────────────────────────────────────────────────
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/terraform.tfvars
+*.tfvars
+*.tfstate
+*.tfstate.*
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── IDE & Editors ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ─── Cursor AI ────────────────────────────────────────────────────────────────
+.cursor/
+
+# ─── Claude AI ────────────────────────────────────────────────────────────────
+.claude/
+
+# ─── Package Manager Locks (keep only one) ────────────────────────────────────
+# Uncomment the one you do NOT use:
+# yarn.lock
+# pnpm-lock.yaml
+
+# ─── Runtime & Cache ──────────────────────────────────────────────────────────
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+.stylelintcache
+*.tgz
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+.docker/
+docker-compose.override.yml
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.local
+tmp/
+temp/
+
+
+.stryker-tmp
