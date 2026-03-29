@@ -8,6 +8,27 @@
  */
 
 // ---------------------------------------------------------------------------
+// src/index.ts (package root — must be covered when integration tests skip)
+// ---------------------------------------------------------------------------
+
+describe('src/index barrel', () => {
+  it('re-exports RateLimiter and public surface symbols', async () => {
+    const mod = await import('../../src/index');
+
+    expect(mod.RateLimiter).toBeDefined();
+
+    expect(mod.loadConfig).toBeDefined();
+    expect(mod.validateConfig).toBeDefined();
+
+    expect(mod.createExpressMiddleware).toBeDefined();
+    expect(mod.createFastifyHook).toBeDefined();
+
+    expect(mod.Logger).toBeDefined();
+    expect(mod.MetricNames).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
 // src/core/index.ts
 // ---------------------------------------------------------------------------
 
